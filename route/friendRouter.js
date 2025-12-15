@@ -11,6 +11,9 @@ router.route("/friends/login")
 router.route("/friends/view-profile")
     .get(authMiddleware, friendController.viewProfile);
 
+router.route("/friends/update-profile")
+    .put(authMiddleware, friendController.updateProfile);
+
 module.exports = router;
 
 // router.route("/friends")

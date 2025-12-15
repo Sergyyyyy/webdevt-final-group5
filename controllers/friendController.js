@@ -28,30 +28,52 @@ exports.registerFriend = async (req, res) => {
 exports.loginFriend = async (req, res) => {
     const { username, password } = req.body;
 
-    const friend = await FriendModel.findOne({ username });
+    const friend = await FriendModel.findOne({
+        where: { username }
+    });
+
     if (!friend)
-        res.status(400).json({
-            "message": "friend not found!"
-        });
+        return res.status(400).json({ message: "friend not found!" });
 
     const isMatch = await bcrypt.compare(password, friend.password);
     if (!isMatch)
-        res.status(400).json({
-            "message": "invalid password"
-        });
+        return res.status(400).json({ message: "invalid password" });
 
-    const token = jwt.sign({username: friend.username}, "securitykey", {expiresIn: "30m"});
+    const token = jwt.sign(
+        { username: friend.username },
+        "securitykey",
+        { expiresIn: "30m" }
+    );
 
     res.json({ token });
-}
+};
+
 
 exports.viewProfile = async (req, res) => {
     const friendUsername = req.user.username;
-    const friend = await FriendModel.findByPk(username, {
+    const friend = await FriendModel.findByPk(friendUsername, {
         attributes: safeAttributes
     });
     if (friend) { res.send({result: friend}) }
     else res.status(404).send({"message": "student not found."});
+}
+
+exports.updateProfile = async (req, res) => {
+    const friendUsername = req.user.username;
+    const isFriendUpdated = await FriendModel.update(req.body, {
+        where: {
+            id: friendUsername
+        }
+    });
+
+    const updatedFriend = await FriendModel.findByPk(friendUsername, {
+        attributes: safeAttributes
+    })
+    
+    res.status(202).json({
+        isFriendUpdated: Boolean(isFriendUpdated[0]),
+        result: updatedFriend
+    });
 }
 
 
