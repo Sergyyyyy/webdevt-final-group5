@@ -11,8 +11,14 @@ const safeAttributes = [
 ]
 
 exports.registerFriend = async (req, res) => {
-    const { password, ...safeProps } = req.body;
-    // { password, ...safeProps } is a destructor
+    const { username, password, ...safeProps } = req.body;
+
+    const existingFriend = await FriendModel.findByPk(username);
+    if (existingFriend) {
+        return res.status(400).json({
+            message: "Username already exists."
+        });
+    }
 
     const newFriend = await FriendModel.build(req.body);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,11 +39,11 @@ exports.loginFriend = async (req, res) => {
     });
 
     if (!friend)
-        return res.status(400).json({ message: "friend not found!" });
+        return res.status(404).json({ message: "friend not found!" });
 
     const isMatch = await bcrypt.compare(password, friend.password);
     if (!isMatch)
-        return res.status(400).json({ message: "invalid password" });
+        return res.status(401).json({ message: "invalid password" });
 
     const token = jwt.sign(
         { username: friend.username },
@@ -55,14 +61,14 @@ exports.viewProfile = async (req, res) => {
         attributes: safeAttributes
     });
     if (friend) { res.send({result: friend}) }
-    else res.status(404).send({"message": "student not found."});
+    else res.status(404).send({"message": "friend not found."});
 }
 
 exports.updateProfile = async (req, res) => {
     const friendUsername = req.user.username;
     const isFriendUpdated = await FriendModel.update(req.body, {
         where: {
-            id: friendUsername
+            username: friendUsername
         }
     });
 
@@ -70,7 +76,7 @@ exports.updateProfile = async (req, res) => {
         attributes: safeAttributes
     })
     
-    res.status(202).json({
+    res.status(200).json({
         isFriendUpdated: Boolean(isFriendUpdated[0]),
         result: updatedFriend
     });
