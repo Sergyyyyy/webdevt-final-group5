@@ -25,6 +25,26 @@ exports.registerFriend = async (req, res) => {
     });
 }
 
+exports.loginFriend = async (req, res) => {
+    const { username, password } = req.body;
+
+    const friend = await FriendModel.findOne({ username });
+    if (!friend)
+        res.status(400).json({
+            "message": "friend not found!"
+        });
+
+    const isMatch = await bcrypt.compare(password, friend.password);
+    if (!isMatch)
+        res.status(400).json({
+            "message": "invalid password"
+        });
+
+    const token = jwt.sign({username: friend.username}, "webdevt", {expiresIn: "30m"});
+
+    res.json({ token });
+}
+
 
 
 // exports.getFriends = async (req, res) => {
