@@ -40,9 +40,18 @@ exports.loginFriend = async (req, res) => {
             "message": "invalid password"
         });
 
-    const token = jwt.sign({username: friend.username}, "webdevt", {expiresIn: "30m"});
+    const token = jwt.sign({username: friend.username}, "securitykey", {expiresIn: "30m"});
 
     res.json({ token });
+}
+
+exports.viewProfile = async (req, res) => {
+    const friendUsername = req.user.username;
+    const friend = await FriendModel.findByPk(username, {
+        attributes: safeAttributes
+    });
+    if (friend) { res.send({result: friend}) }
+    else res.status(404).send({"message": "student not found."});
 }
 
 

@@ -1,11 +1,17 @@
 const router = require("express").Router();
 const friendController = require("../controllers/friendController");
+const authMiddleware = require("../middleware/studentMiddleware");
 
 router.route("/friends/register")
     .post(friendController.registerFriend);
 
 router.route("/friends/login")
     .post(friendController.loginFriend);
+
+router.route("/friends/view-profile")
+    .get(authMiddleware, friendController.viewProfile);
+
+module.exports = router;
 
 // router.route("/friends")
 //     .get(friendController.getFriends)
@@ -15,5 +21,3 @@ router.route("/friends/login")
 //     .get(friendController.getFriendsByUsername)
 //     .put(friendController.updateFriendByUsername)
 //     .delete(friendController.deleteFriendByUsername)
-
-module.exports = router;
