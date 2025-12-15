@@ -11,7 +11,7 @@
     "url": "git+https://github.com/Sergyyyyy/webdevt-final-group5.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sergio",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/Sergyyyyy/webdevt-final-group5#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   }
 }
