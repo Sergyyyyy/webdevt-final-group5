@@ -5,9 +5,9 @@ router.route("/friends")
     .get(friendController.getFriends)
     .post(friendController.addFriend);
 
-router.route("/friends/:id")
-    .get(friendController.getFriendsById)
-    .put(friendController.updateFriendById)
-    .delete(friendController.deleteFriendById)
+router.route("/friends/:username")
+    .get(friendController.getFriendsByUsername)
+    .put(friendController.updateFriendByUsername)
+    .delete(friendController.deleteFriendByUsername)
 
 module.exports = router;

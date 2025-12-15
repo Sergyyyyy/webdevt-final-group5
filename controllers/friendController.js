@@ -14,29 +14,29 @@ exports.addFriend = async (req, res) => {
     });
 }
 
-exports.getFriendsById = async (res, req) => {
+exports.getFriendsByUsername = async (req, res) => {
     const friend = await FriendModel.findByPk(req.params.username);
     if (friend) res.json({ result: friend});
     else res.status(404).send({ message: "ERROR: Status 404!"})
 }
 
-exports.updateFriendById = async (req, res) => {
+exports.updateFriendByUsername = async (req, res) => {
     const isFriendUpdated = await FriendModel.update(req.body, {
         where: {
-            id: req.params.id
+            username: req.params.username
         }
     });
-    const updatedFriend = await FriendModel.findByPk(req.params.id);
+    const updatedFriend = await FriendModel.findByPk(req.params.username);
     res.status(202).json({
         isFriendUpdated: Boolean(isFriendUpdated[0]),
         result: updatedFriend
     });
 }
 
-exports.deleteFriendById = async (req, res) => {
+exports.deleteFriendByUsername = async (req, res) => {
     const isFriendDeleted = await FriendModel.destroy({
         where: {
-            id: req.params.id
+            username: req.params.username
         }
     });
     if (!isFriendDeleted) throw new Error("Friend not found!");
